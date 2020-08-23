@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const matter = require("gray-matter");
 const generateSlug = require("./generate-slug");
 
 function toRegExp(value) {
@@ -30,13 +31,17 @@ module.exports = (pluginOptions) => {
     })
     .filter(doesNotMatchAny(exclusions))
     .map((filename) => {
-      let slug = pluginOptions.generateSlug
-        ? pluginOptions.generateSlug(filename)
-        : generateSlug(path.parse(filename).name);
-
       let fullPath = notesDirectory + filename;
 
       let rawFile = fs.readFileSync(fullPath, "utf-8");
+
+      let frontmatter = matter(rawFile).data;
+
+      const slugStr = frontmatter.title || filename;
+
+      let slug = pluginOptions.generateSlug
+        ? pluginOptions.generateSlug(slugStr)
+        : generateSlug(path.parse(filename).name);
 
       return {
         filename: filename,
