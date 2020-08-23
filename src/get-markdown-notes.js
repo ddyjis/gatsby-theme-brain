@@ -37,6 +37,7 @@ module.exports = (pluginOptions) => {
 
       let frontmatter = matter(rawFile).data;
 
+      // Because I would like to use numbers in filename to indicate the sequence of notes.
       const slugStr = frontmatter.title || filename;
 
       let slug = pluginOptions.generateSlug
